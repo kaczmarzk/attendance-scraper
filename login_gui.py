@@ -25,6 +25,11 @@ from pathlib import Path
 
 class Ui_MainWindow(object):
 
+    def close(self):
+        print('zamkniecie programu')
+        self.driver.quit()
+        ui.close()
+
     def open_error(self):
         MainWindow.close()
         self.window = QtWidgets.QMainWindow()
@@ -38,6 +43,7 @@ class Ui_MainWindow(object):
 
     def obecnosci(self):
         self.driver.find_element_by_id('btn_obecnosci').click()
+        wait(1)
         self.driver.execute_script("javascript:switchTab(this, 1)")
         def odlicz():
             import datetime
@@ -56,11 +62,17 @@ class Ui_MainWindow(object):
 
         do_wrzesnia = odlicz()
         for i in range(do_wrzesnia):
-            wait(1)
+            wait(0.5)
+            WebDriverWait(self.driver, 20).until(EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="tabelaObecnosci"]')))
+            obecnosci_text = self.driver.find_element_by_xpath(
+                '//*[@id="tabelaObecnosci"]').get_attribute('innerHTML')
+            print('pobrano_miesiac')
+            nazwa_miesiaca = 'months/miesiac' + str(i) + '.html'
+            obecnosci_file = open(nazwa_miesiaca, 'w+')
+            obecnosci_file.write(obecnosci_text)
+            obecnosci_file.close()
             self.driver.execute_script("javascript:prevMonth()")
-
-
-
 
 
 
@@ -74,7 +86,7 @@ class Ui_MainWindow(object):
         print('pobrano oceny')
         oceny_file = open('files/oceny.html', 'w+')
         oceny_file.write(oceny_text)
-
+        oceny_file.close()
 
     def start_website(self):
         url = 'https://iuczniowie.progman.pl/idziennik/login.aspx?ReturnUrl=%2fidziennik%2fuser'
@@ -91,6 +103,8 @@ class Ui_MainWindow(object):
 
     def login_failed(self):
         self.error_login.setStyleSheet("color: #D92525;")
+
+    #################### KOD PROGRAMU ####################
 
     def check_log_in(self):
         self.login = self.line_login.text()
@@ -132,10 +146,12 @@ class Ui_MainWindow(object):
                 self.open_error()
 
             else:
-                self.save_login()
-                # self.oceny()
-                self.obecnosci()
+                self.save_login()  # zapisz dane logowania
+                self.oceny()  # pobierz oceny
+                self.obecnosci()  # pobierz obecnosci
+                self.close()  #zamknij program
 
+    #################### KOD PROGRAMU ####################
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
