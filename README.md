@@ -10,6 +10,6 @@ Dzienniczek ZSOT
   <br><br>
   <img src="https://raw.githubusercontent.com/kczmvk/Dzienniczek/master/images/login-screen.png">
     <br><br>
-    <img src="https://raw.githubusercontent.com/kczmvk/Dzienniczek/master/images/app-screen.png">
+    <img src="https://raw.githubusercontent.com/kczmvk/Dzienniczek/master/images/app_screen.png">
 </p>
 
