@@ -25,23 +25,36 @@ from pathlib import Path
 
 class Ui_MainWindow(object):
 
-    def close(self):
-        print('zamkniecie programu')
+    def shutdown(self):
+        print('zamkniecie drivera')
+        wait(1)
+        self.driver.close()
         self.driver.quit()
-        ui.close()
 
     def open_error(self):
-        MainWindow.close()
+        MainWindow.hide()
         self.window = QtWidgets.QMainWindow()
         self.ui = Ui_error_window()
         self.ui.setupUi(self.window)
         self.window.show()
 
+    def open_app(self):
+        from frekfencja_gui import Ui_frekfencja_window
+        MainWindow.hide()
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Ui_frekfencja_window()
+        self.ui.setupUi(self.window)
+        self.window.show()
+
     def save_login(self):
-        data = open('files/data.html', 'w+')
+        data = open('files/data', 'w+')
         data.write(self.login + '\n' + self.password)
 
     def obecnosci(self):
+
+        if os.path.exists('files/obecnosci.html'):
+            os.remove('files/obecnosci.html')
+
         self.driver.find_element_by_id('btn_obecnosci').click()
         wait(1)
         self.driver.execute_script("javascript:switchTab(this, 1)")
@@ -68,9 +81,9 @@ class Ui_MainWindow(object):
             obecnosci_text = self.driver.find_element_by_xpath(
                 '//*[@id="tabelaObecnosci"]').get_attribute('innerHTML')
             print('pobrano_miesiac')
-            nazwa_miesiaca = 'months/miesiac' + str(i) + '.html'
-            obecnosci_file = open(nazwa_miesiaca, 'w+')
-            obecnosci_file.write(obecnosci_text)
+            # nazwa_miesiaca = 'months/miesiac' + str(i) + '.html'
+            obecnosci_file = open('files/obecnosci.html', 'a')
+            obecnosci_file.write(obecnosci_text + '\n\n #################### \n\n')
             obecnosci_file.close()
             self.driver.execute_script("javascript:prevMonth()")
 
@@ -80,12 +93,12 @@ class Ui_MainWindow(object):
         self.driver.find_element_by_id('btn_oceny').click()
         WebDriverWait(self.driver, 20).until(EC.presence_of_element_located(
             (By.XPATH, '/html/body/div[1]/form/table/tbody/tr[5]/td/div/table[1]/tbody/tr[5]')))
-        oceny_text = self.driver.find_element_by_xpath(
-            '/html/body/div[1]/form/table/tbody/tr[5]/td/div/table[1]/tbody').text
+        oceny_html = self.driver.find_element_by_xpath(
+            '/html/body/div[1]/form/table/tbody/tr[5]/td/div/table[1]/tbody').get_attribute('outerHTML')
 
         print('pobrano oceny')
         oceny_file = open('files/oceny.html', 'w+')
-        oceny_file.write(oceny_text)
+        oceny_file.write(oceny_html)
         oceny_file.close()
 
     def start_website(self):
@@ -104,54 +117,74 @@ class Ui_MainWindow(object):
     def login_failed(self):
         self.error_login.setStyleSheet("color: #D92525;")
 
+
+
     #################### KOD PROGRAMU ####################
 
     def check_log_in(self):
-        self.login = self.line_login.text()
-        self.password = self.line_pass.text()
-        captcha = self.captcha_line.text()
-        _translate = QtCore.QCoreApplication.translate
-        if ' ' in self.login or ' ' in self.password:
-            self.error_login.setText(_translate("MainWindow", "Spacja w danych"))
-            self.login_failed()
-        elif self.login == '' or self.password == '':
-            self.error_login.setText(_translate("MainWindow", "Uzupełnij dane logowania"))
-            self.login_failed()
-        elif ' ' in captcha:
-            self.error_login.setText(_translate("MainWindow", "Spacja w captcha"))
-            self.login_failed()
-        elif captcha == '':
-            self.error_login.setText(_translate("MainWindow", "Uzupełnij captcha"))
-            self.login_failed()
+        if self.dane_checkbox.isChecked():
+            self.shutdown()
+            self.open_app()
         else:
-            self.error_login.setStyleSheet("color: #1D2226;")  # hide alert after correct
-            login_key = self.driver.find_element_by_id('UserName')
-            password_key = self.driver.find_element_by_id('Password')
-            school_key = self.driver.find_element_by_id('NazwaSzkoly')
-            captcha_key = self.driver.find_element_by_id('captcha')
-            self.driver.find_element_by_id('UserName').clear()
-            self.driver.find_element_by_id('Logowanie')
-            login_key.send_keys(self.login)
-            password_key.send_keys(self.password)
-            school_key.send_keys('zsotlubliniec')
-            captcha_key.send_keys(captcha)
-            self.driver.find_element_by_id('Logowanie').click()
-            # os.remove('images/captcha')  # remove captcha after log in
-            successful_login = self.check_successful_log_in()
-            if successful_login is False:
-                self.error_login.setText(_translate("MainWindow", "Blad przy logowaniu"))
-                self.login_failed()
-                wait(2)
-                self.driver.quit()
+            try:
+                _translate = QtCore.QCoreApplication.translate
+                self.error_login.setText(_translate("MainWindow", "Trwa ładowanie ..."))
+                self.login_button.setVisible(False)
+                self.login = self.line_login.text()
+                self.password = self.line_pass.text()
+                captcha = self.captcha_line.text()
+                if ' ' in self.login or ' ' in self.password:
+                    self.error_login.setText(_translate("MainWindow", "Spacja w danych"))
+                    self.login_failed()
+                elif self.login == '' or self.password == '':
+                    self.error_login.setText(_translate("MainWindow", "Uzupełnij dane logowania"))
+                    self.login_failed()
+                elif ' ' in captcha:
+                    self.error_login.setText(_translate("MainWindow", "Spacja w captcha"))
+                    self.login_failed()
+                elif captcha == '':
+                    self.error_login.setText(_translate("MainWindow", "Uzupełnij captcha"))
+                    self.login_failed()
+                else:
+                    self.error_login.setStyleSheet("color: #1D2226;")  # hide alert after correct
+                    login_key = self.driver.find_element_by_id('UserName')
+                    password_key = self.driver.find_element_by_id('Password')
+                    school_key = self.driver.find_element_by_id('NazwaSzkoly')
+                    captcha_key = self.driver.find_element_by_id('captcha')
+                    self.driver.find_element_by_id('UserName').clear()
+                    self.driver.find_element_by_id('Logowanie')
+                    login_key.send_keys(self.login)
+                    password_key.send_keys(self.password)
+                    school_key.send_keys('zsotlubliniec')
+                    captcha_key.send_keys(captcha)
+                    self.driver.find_element_by_id('Logowanie').click()
+                    # os.remove('images/captcha')  # remove captcha after log in
+                    successful_login = self.check_successful_log_in()
+                    if successful_login is False:
+                        self.error_login.setText(_translate("MainWindow", "Blad przy logowaniu"))
+                        self.login_failed()
+                        wait(2)
+                        self.driver.quit()
+                        self.open_error()
+
+                    else:
+                        self.save_login()
+                        self.oceny()
+                        self.obecnosci()  #
+                        self.shutdown()
+
+                        import parse
+                        parse.pobierz_oceny()
+                        parse.pobierz_frekfencje()
+                        self.open_app()
+            except Exception as error_log:
+                print('blad przy ladowaniu')
+                self.shutdown()
                 self.open_error()
+                print(error_log)
 
-            else:
-                self.save_login()  # zapisz dane logowania
-                self.oceny()  # pobierz oceny
-                self.obecnosci()  # pobierz obecnosci
-                self.close()  #zamknij program
 
-    #################### KOD PROGRAMU ####################
+    ##################################################
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -178,9 +211,9 @@ class Ui_MainWindow(object):
 
         #################### autocomplete data ####################
 
-        file = Path("files/data.html")
+        file = Path("files/data")
         if file.is_file():
-            self.my_data = open('files/data.html')
+            self.my_data = open('files/data')
             data_tab = []
             for line in self.my_data:
                 data_tab.append(str(line).rstrip())
@@ -218,16 +251,6 @@ class Ui_MainWindow(object):
         self.label_3.setPixmap(QtGui.QPixmap("images/white-logo.png"))
         self.label_3.setScaledContents(True)
         self.label_3.setObjectName("label_3")
-        self.captcha_checkbox = QtWidgets.QCheckBox(self.centralwidget)
-        self.captcha_checkbox.setEnabled(False)
-        self.captcha_checkbox.setGeometry(QtCore.QRect(360, 540, 111, 16))
-        self.captcha_checkbox.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.captcha_checkbox.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
-        self.captcha_checkbox.setStyleSheet("color: #F0F1F2;")
-        self.captcha_checkbox.setChecked(False)
-        self.captcha_checkbox.setTristate(False)
-        self.captcha_checkbox.setObjectName("captcha_checkbox")
-        self.captcha_checkbox.hide()
         self.login_button = QtWidgets.QPushButton(self.centralwidget)
         self.login_button.setGeometry(QtCore.QRect(200, 450, 100, 32))
         self.login_button.setMinimumSize(QtCore.QSize(100, 32))
@@ -279,22 +302,34 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.dane_checkbox = QtWidgets.QCheckBox(self.centralwidget)
+        file = Path("files/wyniki_frekfencja")
+        if file.is_file():
+            self.dane_checkbox.setEnabled(True)
+        else:
+            self.dane_checkbox.setEnabled(False)
+
+        self.dane_checkbox.setGeometry(QtCore.QRect(310, 540, 161, 20))
+        self.dane_checkbox.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.dane_checkbox.setContextMenuPolicy(QtCore.Qt.DefaultContextMenu)
+        self.dane_checkbox.setStyleSheet("color: #F0F1F2;")
+        self.dane_checkbox.setChecked(False)
+        self.dane_checkbox.setTristate(False)
+        self.dane_checkbox.setObjectName("dane_checkbox")
+        self.dane_checkbox.setVisible(True)
 
 
         self.retranslateUi(MainWindow)
-        self.captcha_checkbox.stateChanged['int'].connect(self.widget_captcha.hide)
-        self.captcha_checkbox.stateChanged['int'].connect(self.widget_captcha.hide)
-        self.captcha_checkbox.stateChanged['int'].connect(self.widget_captcha.hide)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Frekfencja ZSOT"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Dzienniczek"))
         self.label.setText(_translate("MainWindow", "Login"))
         self.label_2.setText(_translate("MainWindow", "Hasło"))
-        self.captcha_checkbox.setText(_translate("MainWindow", "Auto Captcha"))
         self.login_button.setText(_translate("MainWindow", "Zaloguj"))
         # self.error_login.setText(_translate("MainWindow", "Nie udało się zalogować"))
+        self.dane_checkbox.setText(_translate("MainWindow", "Nie ładuj nowych danych"))
 
 
 app = QtWidgets.QApplication(sys.argv)
