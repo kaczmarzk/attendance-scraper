@@ -9,7 +9,5 @@ Dzienniczek ZSOT
   <a>Średnia z przedmiotu</a>
   <br><br>
   <img src="https://raw.githubusercontent.com/kczmvk/Dzienniczek/master/images/login-screen.png" height="300" width="250">
-    <br><br>
-    <img src="https://raw.githubusercontent.com/kczmvk/Dzienniczek/master/images/app_screen.png" height="300" width="250">
 </p>
 
