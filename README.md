@@ -8,6 +8,6 @@ Dzienniczek ZSOT
   <a>Frekfencja procentowa</a> |
   <a>Średnia z przedmiotu</a>
   <br><br>
-  <img src="https://raw.githubusercontent.com/kczmvk/Dzienniczek/master/images/login-screen.png" height="300" width="250">
+  <img src="https://raw.githubusercontent.com/kczmvk/Dzienniczek/master/images/login_screen.png" height="300" width="250">
 </p>
 
