@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from oceny_gui import Ui_oceny_window
 from info_gui import Ui_informacje_window
 
@@ -25,7 +27,8 @@ class Ui_frekfencja_window(object):
         frekfencja_window.setMinimumSize(QtCore.QSize(500, 600))
         frekfencja_window.setMaximumSize(QtCore.QSize(500, 600))
         frekfencja_window.setAutoFillBackground(False)
-        frekfencja_window.setStyleSheet("background-color: #1D2226;")
+        frekfencja_window.setStyleSheet("background-color: #181F27;")
+        frekfencja_window.setWindowIcon(QtGui.QIcon('images/icon.ico'))
         self.centralwidget = QtWidgets.QWidget(frekfencja_window)
         self.centralwidget.setObjectName("centralwidget")
         self.widget = QtWidgets.QWidget(self.centralwidget)
@@ -34,7 +37,8 @@ class Ui_frekfencja_window(object):
         self.btn_oceny = QtWidgets.QPushButton(self.widget)
         self.btn_oceny.setGeometry(QtCore.QRect(10, 20, 91, 25))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setFamily("Yu Gothic UI")
+        font.setPointSize(8)
         self.btn_oceny.setFont(font)
         self.btn_oceny.setStyleSheet("background-color: #1D2226; color: #F0F1F2 ; border: 1px solid black")
         self.btn_oceny.setObjectName("btn_oceny")
@@ -43,14 +47,16 @@ class Ui_frekfencja_window(object):
         self.btn_frekfencja = QtWidgets.QPushButton(self.widget)
         self.btn_frekfencja.setGeometry(QtCore.QRect(120, 20, 91, 25))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setFamily("Yu Gothic UI")
+        font.setPointSize(8)
         self.btn_frekfencja.setFont(font)
         self.btn_frekfencja.setStyleSheet("background-color: #1D2226; color: #F0F1F2 ; border: 1px solid #F0F1F2")
         self.btn_frekfencja.setObjectName("btn_frekfencja")
         self.btn_sprawdziany = QtWidgets.QPushButton(self.widget)
         self.btn_sprawdziany.setGeometry(QtCore.QRect(229, 20, 91, 25))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setFamily("Yu Gothic UI")
+        font.setPointSize(8)
         self.btn_sprawdziany.setFont(font)
         self.btn_sprawdziany.setStyleSheet("background-color: #1D2226; color: #F0F1F2 ; border: 1px solid black")
         self.btn_sprawdziany.setObjectName("btn_sprawdziany")
@@ -73,6 +79,7 @@ class Ui_frekfencja_window(object):
         self.label = QtWidgets.QLabel(self.widget_results)
         self.label.setGeometry(QtCore.QRect(30, 20, 111, 31))
         font = QtGui.QFont()
+        font.setFamily("Yu Gothic UI")
         font.setPointSize(11)
         self.label.setFont(font)
         self.label.setStyleSheet("color: #F0F1F2; border: none;")
@@ -84,7 +91,8 @@ class Ui_frekfencja_window(object):
         self.label_2 = QtWidgets.QLabel(self.widget_results)
         self.label_2.setGeometry(QtCore.QRect(190, 30, 231, 20))
         font = QtGui.QFont()
-        font.setPointSize(7)
+        font.setFamily("Yu Gothic UI")
+        font.setPointSize(6)
         self.label_2.setFont(font)
         self.label_2.setStyleSheet("color: #F0F1F2; border: none;")
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
@@ -105,11 +113,11 @@ class Ui_frekfencja_window(object):
         self.btn_sprawdziany.setText(_translate("frekfencja_window", "Sprawdziany"))
         self.btn_informacje.setText(_translate("frekfencja_window", "Informacje"))
         self.label.setText(_translate("frekfencja_window", "Frekfencja"))
-        file = open('files/wyniki_frekfencja')
+        file = open('files/wyniki_frekfencja', encoding='utf-8')
         frekfencja_wyniki = file.read()
         file.close()
         self.textBrowser.setHtml(_translate("oceny_window", frekfencja_wyniki ))
-        self.label_2.setText(_translate("frekfencja_window", "godziny obecne|godziny nieobecne|procent"))
+        self.label_2.setText(_translate("frekfencja_window", "godziny obecne | godziny nieobecne | procent"))
 
 
 if __name__ == "__main__":

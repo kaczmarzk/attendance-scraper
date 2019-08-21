@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # przedmiot obecnosc_3 = nieobecny xx
 # przedmiot obecnosc_0 = obecny yy
 # przedmiot obecnosc_1 = nieobecnosc usprawiedliwiona xx
@@ -20,7 +22,7 @@ from time import sleep as wait
 def pobierz_frekfencje():
 
     data = []
-    file = open('files/obecnosci.html', 'r')
+    file = open('files/obecnosci.html', 'r', encoding='utf-8')
     soup = BeautifulSoup(file, 'html.parser')
     obecnosci = {}
     for subject in soup.select('[class*="obecnosc_"]'):
@@ -62,21 +64,21 @@ def pobierz_frekfencje():
     for i in range(len(przedmioty)):
         frekfencja[i] = int((obecnosci[i] / (nieobecnosci[i] + obecnosci[i])) * 100)
 
-    wynik = open('files/wyniki_frekfencja', 'w+')
+    wynik = open('files/wyniki_frekfencja', 'w+' , encoding='utf-8')
 
     for i in range(len(przedmioty)):
         wynik.write(
-            '' + str(przedmioty[i]).title() + '  ' + '<p align="right"> <b style="color: #78961D;" >' + str(obecnosci[i]) + '</b>  | <b style="color: #D94A3D;">' + str(nieobecnosci[i]) + ' </b> | <b style="color: #F2F2F2">' + str(frekfencja[i]) + '%' + ' </p> </b>')
+            '<span charset="UTF-8">' + str(przedmioty[i]).title() + ' </span> ' + '<p align="right"> <b style="color: #78961D;" >' + str(obecnosci[i]) + '</b>  | <b style="color: #D94A3D;">' + str(nieobecnosci[i]) + ' </b> | <b style="color: #F2F2F2">' + str(frekfencja[i]) + '%' + ' </p> </b>')
 
     print('frekfencja przetworzona')
 
 
 def pobierz_oceny():
 
-    file = open('files/oceny.html', 'r')
+    file = open('files/oceny.html', 'r', encoding='utf-8')
     soup = BeautifulSoup(file, 'html.parser')
     tbody = soup.find('tbody')
-    wynik = open('files/wyniki_oceny', 'w+')
+    wynik = open('files/wyniki_oceny', 'w+', encoding='utf-8')
     for tr in tbody.find_all(class_='styl_wiersza1'):
         td = tr.find_all('td')[0].text.strip()
         ocena_sem1 = tr.find_all('td')[2].text.strip()
