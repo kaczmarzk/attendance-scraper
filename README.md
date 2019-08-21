@@ -10,4 +10,13 @@ Dzienniczek ZSOT
   <br><br>
   <img src="https://raw.githubusercontent.com/kczmvk/Dzienniczek/master/images/login_screen.png" height="300" width="250">
 </p>
+  
+  Uruchomienie
+----------
+
+Pobierz plik `.exe` [tutaj](https://drive.google.com/file/d/1p-9ksxC2e6FmX_cWktC34KwPvnfFLUmN).
+<br>
+Po wypakowaniu uruchom aplikacje poprzez `Dzienniczek.exe`
+
+
 
